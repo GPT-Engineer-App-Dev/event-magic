@@ -20,7 +20,7 @@ const EventItem = ({ title, date, description, onEdit, onDelete, onView }) => (
     <HStack mt={4}>
       <Button colorScheme="teal" size="sm" onClick={onEdit}>Edit</Button>
       <Button colorScheme="red" size="sm" onClick={onDelete}>Delete</Button>
-      <Button colorScheme="blue" size="sm" onClick={onView}>View</Button> {/* Add View button */}
+      <Button colorScheme="blue" size="sm" onClick={onView}>View</Button>
     </HStack>
   </Box>
 );
@@ -28,7 +28,13 @@ const EventItem = ({ title, date, description, onEdit, onDelete, onView }) => (
 const EventList = ({ events, onEdit, onDelete, onView }) => (
   <VStack spacing={4} align="stretch" width="100%">
     {events.map((event, index) => (
-      <EventItem key={index} {...event} onEdit={() => onEdit(index)} onDelete={() => onDelete(index)} onView={() => onView(index)} /> {/* Pass onView to EventItem */}
+      <EventItem
+        key={index}
+        {...event}
+        onEdit={() => onEdit(index)}
+        onDelete={() => onDelete(index)}
+        onView={() => onView(index)}
+      />
     ))}
   </VStack>
 );
