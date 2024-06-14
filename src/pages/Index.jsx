@@ -1,5 +1,6 @@
 import { Box, Container, Heading, VStack, Text, HStack, Spacer, Button, FormControl, FormLabel, Input, Textarea, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Header = ({ onOpen }) => (
   <Box as="header" bg="blue.500" color="white" py={4} px={8} width="100%">
@@ -11,7 +12,7 @@ const Header = ({ onOpen }) => (
   </Box>
 );
 
-const EventItem = ({ title, date, description, onEdit, onDelete }) => (
+const EventItem = ({ title, date, description, onEdit, onDelete, onView }) => (
   <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} mb={4} width="100%">
     <Heading size="md">{title}</Heading>
     <Text fontSize="sm" color="gray.500">{date}</Text>
@@ -19,14 +20,15 @@ const EventItem = ({ title, date, description, onEdit, onDelete }) => (
     <HStack mt={4}>
       <Button colorScheme="teal" size="sm" onClick={onEdit}>Edit</Button>
       <Button colorScheme="red" size="sm" onClick={onDelete}>Delete</Button>
+      <Button colorScheme="blue" size="sm" onClick={onView}>View</Button> {/* Add View button */}
     </HStack>
   </Box>
 );
 
-const EventList = ({ events, onEdit, onDelete }) => (
+const EventList = ({ events, onEdit, onDelete, onView }) => (
   <VStack spacing={4} align="stretch" width="100%">
     {events.map((event, index) => (
-      <EventItem key={index} {...event} onEdit={() => onEdit(index)} onDelete={() => onDelete(index)} />
+      <EventItem key={index} {...event} onEdit={() => onEdit(index)} onDelete={() => onDelete(index)} onView={() => onView(index)} /> {/* Pass onView to EventItem */}
     ))}
   </VStack>
 );
@@ -86,6 +88,7 @@ const Index = () => {
     { title: "Event 3", date: "2023-10-10", description: "Description for event 3" },
   ]);
   const [currentEventIndex, setCurrentEventIndex] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleCreate = () => {
     setCurrentEventIndex(null);
@@ -101,6 +104,10 @@ const Index = () => {
     setEvents(events.filter((_, i) => i !== index));
   };
 
+  const handleView = (index) => {
+    navigate(`/event/${index}`); // Navigate to event details page
+  };
+
   const handleSubmit = (event) => {
     if (currentEventIndex !== null) {
       setEvents(events.map((e, i) => (i === currentEventIndex ? event : e)));
@@ -114,7 +121,7 @@ const Index = () => {
       <Header onOpen={handleCreate} />
       <Box flex="1" py={8}>
         <Heading as="h2" size="xl" mb={6}>Upcoming Events</Heading>
-        <EventList events={events} onEdit={handleEdit} onDelete={handleDelete} />
+        <EventList events={events} onEdit={handleEdit} onDelete={handleDelete} onView={handleView} /> {/* Pass handleView to EventList */}
       </Box>
       <Footer />
       <EventForm isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} initialData={currentEventIndex !== null ? events[currentEventIndex] : null} />
